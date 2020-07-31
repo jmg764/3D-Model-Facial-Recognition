@@ -57,7 +57,7 @@ if snapshotsTaken < MAX_SNAPSHOTS and transformations is None:
 
 Synthetic images are saved in a file called ```synthetic_training_data``` which is organized into subdirectories corresponding to each subject. Here is an example of one of the snapshots created:
 
-<img src=""  alt="drawing" width="225"/>
+<img src="synthetic_training_data/s1/synthetic1.png"  alt="drawing" width="225"/>
 
 ## HoG
 
