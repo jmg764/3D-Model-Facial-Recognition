@@ -34,7 +34,7 @@ The 3D models for this project are the ```.obj``` files in ```../frontal1/obj```
 
 Additionally, the images used for testing our model are the ```.bmp``` files in each ```../frontal1/obj``` (only one side of a subject's face is used):
 
-<img src="test-data/test1"  alt="drawing" width="300"/>
+<img src="test-data/test1.png"  alt="drawing" width="250"/>
 
 
 ## Synthetic Code Generation
