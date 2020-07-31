@@ -34,7 +34,7 @@ The 3D models for this project are the ```.obj``` files in ```../frontal1/obj```
 
 Additionally, the images used for testing our model are the ```.bmp``` files in each ```../frontal1/obj``` (only one side of a subject's face is used):
 
-<img src="test-data/test1.png"  alt="drawing" width="250"/>
+<img src="test-data/test1.png"  alt="drawing" width="225"/>
 
 
 ## Synthetic Code Generation
@@ -43,6 +43,21 @@ The code for synthetic image generation can be found in [Synthetic Image Genrati
 
 The number of snapshots taken per 3D model is set to 50 by default, but can be changed by altering the value of ```MAX_SNAPSHOTS``` in Synthetic Image Genration.ipynb.
 
+Each time a snapshot of a subject is taken, it undergoes a random transformation dictated by the following, thereby creating a variety of angles and positions for our training data:
+
+```python 
+if snapshotsTaken < MAX_SNAPSHOTS and transformations is None:
+        xOffset = random.uniform(-100.0, 100.0)
+        yOffset = random.uniform(-100.0, 100.0)
+        zOffset = random.uniform(-500.0, -300.0)
+        xRotate = random.uniform(-50.0, 50.0)
+        yRotate = random.uniform(-5.0, 5.0)
+        transformations = (xOffset, yOffset, zOffset, xRotate, yRotate)
+```
+
+Synthetic images are saved in a file called ```synthetic_training_data``` which is organized into subdirectories corresponding to each subject. Here is an example of one of the snapshots created:
+
+<img src=""  alt="drawing" width="225"/>
 
 ## HoG
 
