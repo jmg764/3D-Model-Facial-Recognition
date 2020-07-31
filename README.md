@@ -8,11 +8,9 @@ This is the final project for the CS-GY-6643 Computer Vision course at NYU Tando
 
 We generated synthetic images based on the 3D models provided in the [Florence 3D Faces dataset](https://www.micc.unifi.it/resources/datasets/florence-3d-faces), and then implemented facial recognition using Histogram of Oriented Gradients (HOG) and k-Nearest Neighbors (k-NN) as described in [this tutorial](https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/).
 
-## Synthetic Image Generation
+## The Dataset
 
-Downloading the Florence 3D Faces dataset requires submission of a license agreement (information can be found [here](http://www.micc.unifi.it/vim/3dfaces-dataset/index.html#!prettyPhoto)).
-
-The code for synthetic image generation can be found in [Synthetic Image Genration.ipynb](https://github.com/jmg764/3D-Model-Facial-Recognition/blob/master/Synthetic%20Image%20Generation.ipynb). It requires installation of the packages ```pywavefront``` and ```pyglet```. The downloaded dataset should be called ```Florence Face``` and contain a file for each individual with the following structure: 
+Downloading the Florence 3D Faces dataset requires submission of a license agreement (information can be found [here](http://www.micc.unifi.it/vim/3dfaces-dataset/index.html#!prettyPhoto)). Once downloaded, the dataset should exist in a directory called ```Florence Face``` and contain subdirectories for each individual with the following structure: 
 
 ```bash
 ├── subject_01
@@ -30,9 +28,18 @@ The code for synthetic image generation can be found in [Synthetic Image Genrati
 │           ├── obj
 │           └── vrml
 ```
-The 3D models for this project are the ```.obj``` files in ```../frontal1/obj``` and ```../frontal2/obj```. 
+The 3D models for this project are the ```.obj``` files in ```../frontal1/obj``` and ```../frontal2/obj```. The following is an example of one such model opened in Xcode 11.6: 
 
-The number of snapshots taken per 3D model is set to 50 by default, but can be changed by altering the value of ```MAX_SNAPSHOTS```.
+<img src="3d_model_sample.gif"  alt="drawing" width="300"/>
+
+Additionally, the images used for testing our model are the ```.bmp``` files in each ```../frontal1/obj``` (only one half of the full image is used since it consists of 
+
+
+## Synthetic Code Generation
+
+The code for synthetic image generation can be found in [Synthetic Image Genration.ipynb](https://github.com/jmg764/3D-Model-Facial-Recognition/blob/master/Synthetic%20Image%20Generation.ipynb). It requires installation of the packages ```pywavefront``` and ```pyglet```. 
+
+The number of snapshots taken per 3D model is set to 50 by default, but can be changed by altering the value of ```MAX_SNAPSHOTS``` in Synthetic Image Genration.ipynb.
 
 
 ## HoG
