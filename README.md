@@ -6,7 +6,7 @@ This is the final project for the CS-GY-6643 Computer Vision course at NYU Tando
 
 **In this project, we explore the use of synthetic 2D images from 3D models for use in a 2D facial recognition system.** This may prove to be useful in situations where identification of an individual is warranted, but only a scant number of images of that person's face are available. Using those images, it is often possible to create a 3D facial reconstruction from which a substantial amount of 2D images can be generated for training. Additionally, whereas non-synthetic images of a person's face may exhibit varying lighting, facial expressions, and head poses, synthetic images can preserve greater consistency in terms of these conditions. Thus, the generation of a large, homogenous collection of synthetic face images for training can significantly improve the reliability of a given facial recognition model.
 
-We generated synthetic images based on the 3D models provided in the [Florence 3D Faces dataset](https://www.micc.unifi.it/resources/datasets/florence-3d-faces), and then implemented facial recognition through deep metric learning using Histogram of Oriented Gradients (HOG) and k-Nearest Neighbors (k-NN). Facial recognition implementation was based off of [this tutorial](https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/).
+We generated synthetic images based on the 3D models provided in the [Florence 3D Faces dataset](https://www.micc.unifi.it/resources/datasets/florence-3d-faces), and then implemented facial recognition through deep metric learning using Histogram of Oriented Gradients (HOG) and k-Nearest Neighbors (k-NN). Facial recognition implementation was based off of [this tutorial](https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/), and makes use of the [dlib library](http://dlib.net) and [face_recognition module](https://github.com/ageitgey/face_recognition).
 
 ## The Dataset
 
@@ -59,11 +59,20 @@ Synthetic images are saved in a file called ```synthetic_training_data``` which 
 
 <img src="synthetic_image_example.png"  alt="drawing" width="225"/>
 
-## HOG
+## Implementing Deep Metric Learning
+
+Face recognition through deep metric learning involves the use of a neural network to output a real-valued feature vector, or embedding, which is used to quantify a given face. The network used is based on the ResNet-34 architecture described [here](https://arxiv.org/abs/1512.03385), but with a few layers removed and the number of filters per layer reduced by half. It was trained on a dataset of approximately 3 million images, and obtained a 99.38% accuracy on the [Labeled Faces in the Wild](http://vis-www.cs.umass.edu/lfw/) benchmark. 
+
+Training involves a "triplet training step" in which the network creates embeddings for three unique face images –– two of which are the same person. The network is tweaked slightly so that the measurements it generates for the two images of the same person are closer via distance metric than those for the image of the other person:
+
+<img src="triplet_training_example.png"  alt="drawing" width="225"/>
+
+
+### HOG
 
 Object detection requires comparison between a known image and the image in question to see if a match exists. It is tempting to compare pixels directly, but very dark and very light images of the same object will have completely different pixel values. Histogram of Oriented Gradients (HOG) is an object detection method that solves this problem by only considering the direction that brightness changes (gradient orientation) in a particular region of an image. This captures the major features of an image regardless of image brightness. Comparison of a given image with a HOG face pattern generated from many images can aid in facial detection as shown in the following image obtained from [this article](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78):
 
-<img src="hog_example.png"  alt="drawing" width="225"/>
+<img src="hog_example.png"  alt="drawing" width="550"/>
 
 
 
