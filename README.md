@@ -30,11 +30,11 @@ Downloading the Florence 3D Faces dataset requires submission of a license agree
 ```
 The 3D models for this project are the ```.obj``` files in ```../frontal1/obj``` and ```../frontal2/obj```. The following is an example of one such model opened in Xcode 11.6: 
 
-<img src="3d_model_sample.gif"  alt="drawing" width="300"/>
+<img src="images/3d_model_sample.gif"  alt="drawing" width="300"/>
 
 Additionally, the images used for testing our model are the ```.bmp``` files in each ```../frontal1/obj``` (only one side of a subject's face is used):
 
-<img src="test-data/test1.png"  alt="drawing" width="225"/>
+<img src="test_data/test1.png"  alt="drawing" width="225"/>
 
 
 ## Synthetic Image Generation
@@ -57,7 +57,7 @@ if snapshotsTaken < MAX_SNAPSHOTS and transformations is None:
 
 Synthetic images are saved in a file called ```synthetic_training_data``` which is organized into subdirectories corresponding to each subject. Here is an example of one of the snapshots created:
 
-<img src="synthetic_image_example.png"  alt="drawing" width="225"/>
+<img src="images/synthetic_image_example.png"  alt="drawing" width="225"/>
 
 ## Deep Metric Learning
 
@@ -69,13 +69,13 @@ Face recognition through deep metric learning involves the use of a neural netwo
 
 Before we can go about recognizing faces, we must first locate them in our images. In general, any sort of object detection requires comparison between a known image and the image in question to see if a pattern or feature match exists. It is tempting to compare pixels directly, but very dark and very light images of the same object will have completely different pixel values. Histogram of Oriented Gradients (HOG) is an object detection method that solves this problem by only considering the direction that brightness changes (gradient orientation) in a particular region of an image. This captures the major features of an image regardless of image brightness. Comparison of a given image with a HOG face pattern generated from many images can aid in facial detection as shown in the following image obtained from [this article](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78):
 
-<img src="hog_example.png"  alt="drawing" width="550"/>
+<img src="images/hog_example.png"  alt="drawing" width="550"/>
 
 ### 2. Affine Transformation
 
 Now that faces are isolated in our images, each image needs to be warped so that facial features are in the same location for each image. This makes it easier for our neural network to compare faces later on. Once facial features are identified through [facial landmark estimation](http://www.csc.kth.se/~vahidk/papers/KazemiCVPR14.pdf), an affine transformation is used to accomplish this warping:
 
-<img src="face_transformation_example.png"  alt="drawing" width="750"/>
+<img src="images/face_transformation_example.png"  alt="drawing" width="750"/>
 
 ### 3. Encoding Faces
 
@@ -85,11 +85,11 @@ But which measurements should we consider? It turns out that the measurements th
 
 Training involves a "triplet training step" in which the network creates embeddings for three unique face images –– two of which are the same person. The network is tweaked slightly so that the measurements it generates for the two images of the same person are closer via distance metric than those for the image of the other person:
 
-<img src="triplet_training_example.png"  alt="drawing" width="550"/>
+<img src="images/triplet_training_example.png"  alt="drawing" width="550"/>
 
 Once the network has been trained, it can generate measurements for faces it hasn't seen before. Here is an example of measurements generated from a test image:
 
-<img src="test_image_embedding.png"  alt="drawing" width="600"/>
+<img src="images/test_image_embedding.png"  alt="drawing" width="600"/>
 
 (Example images are from [this article](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)).
 
@@ -258,11 +258,11 @@ $ python recognize_faces_image.py --encodings encodings.pickle --image test_data
 
 Which results in a correct labeling of Subject 1:
 
-<img src="test1_labeled.png"  alt="drawing" width="225"/>
+<img src="images/test1_labeled.png"  alt="drawing" width="225"/>
 
 Subjects 2-5 are correctly labeled as well. Using HOG on Subject 6 results in no facial detection, whereas using CNN results in correct facial detection and recognition as expected:
 
-<img src="test6_labeled.png"  alt="drawing" width="225"/>
+<img src="images/test6_labeled.png"  alt="drawing" width="225"/>
 
 HOG is known to be less accurate than CNN, but was used here because it is faster, and therefore more practical to use when working with a CPU as was the case for this project. Speed is a particular concern when processing a large number of images. HOG was therefore chosen for use on the 300 training images, and was prioritized for the test images for the sake of consistency. We speculate that HOG may have failed detecting the face on Subject 6 because of his facial hair; this may have obfuscated the gradient orientation patterns that would have indicated the presence of a face. 
 
