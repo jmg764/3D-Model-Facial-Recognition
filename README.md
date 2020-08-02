@@ -6,7 +6,7 @@ This is the final project for the CS-GY-6643 Computer Vision course at NYU Tando
 
 **In this project, we explore the use of synthetic 2D images from 3D models for use in a 2D facial recognition system.** This may prove to be useful in situations where identification of an individual is warranted, but only a scant number of images of that person's face are available. Using those images, it is often possible to create a 3D facial reconstruction from which a substantial amount of 2D images can be generated for training. Additionally, whereas non-synthetic images of a person's face may exhibit varying lighting, facial expressions, and head poses, synthetic images can preserve greater consistency in terms of these conditions. Thus, the generation of a large, homogenous collection of synthetic face images for training can significantly improve the reliability of a given facial recognition model.
 
-We generated synthetic images based on the 3D models provided in the [Florence 3D Faces dataset](https://www.micc.unifi.it/resources/datasets/florence-3d-faces), and then implemented facial recognition through deep metric learning using Histogram of Oriented Gradients (HOG) and k-Nearest Neighbors (k-NN). Facial recognition implementation was based off of [this tutorial](https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/), and makes use of the [dlib library](http://dlib.net) and [face_recognition module](https://github.com/ageitgey/face_recognition).
+We generated synthetic images based on the 3D models provided in the [Florence 3D Faces dataset](https://www.micc.unifi.it/resources/datasets/florence-3d-faces), and then implemented facial recognition through deep metric learning using Histogram of Oriented Gradients (HOG) and k-Nearest Neighbors (k-NN). Facial recognition implementation was based off of [this tutorial](https://www.pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/), and **makes use of [OpenCV](https://opencv.org), [dlib](http://dlib.net) and the [face_recognition module](https://github.com/ageitgey/face_recognition)**.
 
 ## The Dataset
 
@@ -98,5 +98,51 @@ The parts of the face that these 128 numbers are measuring doesn't matter to us.
 ### 4. Labeling the Test Image
 
 The final step is to compare the embedding of a test image with those in a database of labeled faces. This can be accomplished through a basic machine learning algorithm such as SVM or K-Nearest Neightbors. The label with the closest match to the test image is the new label assigned to the test image.
+
+
+## Implementation
+
+In ```encode_faces.py```, we make use of the ```face_recognition``` module which is built on top of ```dlib```. The arguments that can be passed into this script are dictated by:
+
+```python
+
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--dataset", required=True,
+	help="path to input directory of faces + images")
+ap.add_argument("-e", "--encodings", required=True,
+	help="path to serialized db of facial encodings")
+ap.add_argument("-d", "--detection-method", type=str, default="cnn",
+	help="face detection model to use: either `hog` or `cnn`")
+args = vars(ap.parse_args())
+
+```
+
+```--dataset``` provides the path to the dataset of training images, ```--encodings``` points to the file where face encodings will be stored, and ```--detection-method``` specifies the face detection model that will be used (either HOG or CNN).
+
+Images are converted to RGB since ```dlib``` expects that image format as input:
+
+```python
+rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+```
+
+Next, face localization and computation of embeddings is accomplished through the following:
+
+```python 
+# detect the (x, y)-coordinates of the bounding boxes
+        # corresponding to each face in the input image
+	boxes = face_recognition.face_locations(rgb,
+		model=args["detection_method"])
+
+	# compute the facial embedding for the face
+	encodings = face_recognition.face_encodings(rgb, boxes)
+
+	# loop over the encodings
+	for encoding in encodings:
+		# add each encoding + name to our set of known names and
+		# encodings
+		knownEncodings.append(encoding)
+		knownNames.append(name)
+ ```
 
 
