@@ -97,16 +97,17 @@ The parts of the face that these 128 numbers are measuring doesn't matter to us.
 
 ### 4. Labeling the Test Image
 
-The final step is to compare the embedding of a test image with those in a database of labeled faces. This can be accomplished through a basic machine learning algorithm such as SVM or K-Nearest Neightbors. The label with the closest match to the test image is the new label assigned to the test image.
+The final step is to compare the embedding of a test image with those in a database of labeled faces. This can be accomplished through a basic machine learning algorithm such as SVM or k-Nearest Neightbors. The label with the closest match to the test image is the new label assigned to the test image.
 
 
 ## Implementation
+
+### 1. Encode Faces
 
 In ```encode_faces.py```, we make use of the ```face_recognition``` module which is built on top of ```dlib```. The arguments that can be passed into this script are dictated by:
 
 ```python
 
-# construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--dataset", required=True,
 	help="path to input directory of faces + images")
@@ -123,6 +124,7 @@ args = vars(ap.parse_args())
 Images are converted to RGB since ```dlib``` expects that image format as input:
 
 ```python
+image = cv2.imread(imagePath)
 rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 ```
 
@@ -161,13 +163,67 @@ To create face embeddings for the synthetic images created earlier, we run ```en
 
 ```bash
 
-(base) Jonathans-MBP:3D Model Facial Recognition jonathanglaser$ python encode_faces.py --dataset synthetic_training_data --encodings encodings.pickle --detection-method hog
+$ python encode_faces.py --dataset synthetic_training_data --encodings encodings.pickle --detection-method hog
 [INFO] quantifying faces...
 [INFO] processing image 1/300
 [INFO] processing image 2/300
 [INFO] processing image 3/300
+...
+[INFO] processing image 298/300
+[INFO] processing image 299/300
+[INFO] processing image 300/300
+[INFO] serializing encodings...
 
 ```
 
+### 2. Facial Recognition
 
+In ```recognize_faces_image.py```, ```face_recognition``` is used on a test image to localize and encode one or more faces in the image, and compare this new embedding with the embedding previously computed in ```encode_faces.py```. The following are the arguments that can be passed into this script:
+
+```python
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-e", "--encodings", required=True,
+	help="path to serialized db of facial encodings")
+ap.add_argument("-i", "--image", required=True,
+	help="path to input image")
+ap.add_argument("-d", "--detection-method", type=str, default="cnn",
+	help="face detection model to use: either `hog` or `cnn`")
+args = vars(ap.parse_args())
+
+```
+
+```--encodings``` provides the path to the encodings file created earlier, ```--image``` provides the test image, and ```--detection-method``` specifies the facial detection method used on the input image (in this case it is HOG once again).
+
+Similar to before, here we input the test image and create embeddings for each face in that image:
+
+```python
+
+# load the input image and convert it from BGR to RGB
+image = cv2.imread(args["image"])
+rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+# detect the (x, y)-coordinates of the bounding boxes corresponding to each face in the input image, then compute the facial embeddings for each face
+print("[INFO] recognizing faces...")
+boxes = face_recognition.face_locations(rgb,
+	model=args["detection_method"])
+encodings = face_recognition.face_encodings(rgb, boxes)
+
+```
+
+Next, we loop over all encodings in the test image and attempt to match each face in the image to those in the known encodings dataset:
+
+```python
+
+# loop over the facial embeddings
+for encoding in encodings:
+	# attempt to match each face in the input image to our known
+	# encodings
+	matches = face_recognition.compare_faces(data["encodings"],
+		encoding)
+	name = "Unknown"
+
+```
+
+```compare_faces``` essentially performs **k-NN** for classification by computing the Euclidean distance between the candidate embedding and all faces in the dataset.
 
