@@ -118,7 +118,7 @@ args = vars(ap.parse_args())
 
 ```
 
-```--dataset``` provides the path to the dataset of training images, ```--encodings``` points to the file where face encodings will be stored, and ```--detection-method``` specifies the face detection model that will be used (either HOG or CNN).
+```--dataset``` provides the path to the dataset of training images, ```--encodings``` points to the file where face encodings will be stored (in this case that file is called ```embeddings.pickle```, and ```--detection-method``` specifies the face detection model that will be used (either HOG or CNN).
 
 Images are converted to RGB since ```dlib``` expects that image format as input:
 
@@ -126,23 +126,48 @@ Images are converted to RGB since ```dlib``` expects that image format as input:
 rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 ```
 
-Next, face localization and computation of embeddings is accomplished through the following:
+Next, for each image in the training set, face localization and computation of embeddings is accomplished through the following:
 
 ```python 
 # detect the (x, y)-coordinates of the bounding boxes
-        # corresponding to each face in the input image
-	boxes = face_recognition.face_locations(rgb,
-		model=args["detection_method"])
+# corresponding to each face in the input image
+boxes = face_recognition.face_locations(rgb,
+	model=args["detection_method"])
 
-	# compute the facial embedding for the face
-	encodings = face_recognition.face_encodings(rgb, boxes)
+# compute the facial embedding for the face
+encodings = face_recognition.face_encodings(rgb, boxes)
 
-	# loop over the encodings
-	for encoding in encodings:
-		# add each encoding + name to our set of known names and
-		# encodings
-		knownEncodings.append(encoding)
-		knownNames.append(name)
- ```
+# loop over the encodings
+for encoding in encodings:
+	# add each encoding + name to our set of known names and encodings
+	knownEncodings.append(encoding)
+	knownNames.append(name)
+```
+
+The resulting encodings are then saved to disk for use in ```recognize_faces_image.py```, which handles facial recognition:
+
+```python
+
+# dump the facial encodings + names to disk
+print("[INFO] serializing encodings...")
+data = {"encodings": knownEncodings, "names": knownNames}
+f = open(args["encodings"], "wb")
+f.write(pickle.dumps(data))
+f.close()
+
+```
+
+To create face embeddings for the synthetic images created earlier, we run ```encode_faces.py``` in the terminal:
+
+```bash
+
+(base) Jonathans-MBP:3D Model Facial Recognition jonathanglaser$ python encode_faces.py --dataset synthetic_training_data --encodings encodings.pickle --detection-method hog
+[INFO] quantifying faces...
+[INFO] processing image 1/300
+[INFO] processing image 2/300
+[INFO] processing image 3/300
+
+```
+
 
 
