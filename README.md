@@ -63,7 +63,7 @@ Synthetic images are saved in a file called ```synthetic_training_data``` which 
 
 Face recognition through deep metric learning involves the use of a neural network to output a real-valued feature vector, or embedding, which is used to quantify a given face. The network used in this project is based on the ResNet-34 architecture described [here](https://arxiv.org/abs/1512.03385), but with a few layers removed and the number of filters per layer reduced by half. It was already trained on a dataset of approximately 3 million images, and obtained a 99.38% accuracy on the [Labeled Faces in the Wild](http://vis-www.cs.umass.edu/lfw/) benchmark. This means that, given two images, it correctly predicts if the images are of the same person 99.38% of the time. In this project, the network is further trained on the Florence 3D Faces dataset.
 
-**Creation of the embeddings used for training involves facial detection, affine transformation, and encoding faces, as detailed below: **
+**Creation of the embeddings used for training involves facial detection, affine transformation, encoding faces, and labeling the test image, as detailed below:**
 
 ### 1. Facial Detection with HOG
 
@@ -86,3 +86,17 @@ But which measurements should we consider? It turns out that the measurements th
 Training involves a "triplet training step" in which the network creates embeddings for three unique face images –– two of which are the same person. The network is tweaked slightly so that the measurements it generates for the two images of the same person are closer via distance metric than those for the image of the other person:
 
 <img src="triplet_training_example.png"  alt="drawing" width="550"/>
+
+Once the network has been trained, it can generate measurements for faces it hasn't seen before. Here is an example of measurements generated from a test image:
+
+<img src="test_image_embedding.png"  alt="drawing" width="550"/>
+
+(Example images are from [this article](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)).
+
+The parts of the face that these 128 numbers are measuring doesn't matter to us. What does matter, however, is that the network generates nearly the same numbers when looking at two different images of the same person. 
+
+### 4. Labeling the Test Image
+
+The final step is to compare the embedding of a test image with those in a database of labeled faces. This can be accomplished through a basic machine learning algorithm such as SVM or K-Nearest Neightbors. The label with the closest match to the test image is the new label assigned to the test image.
+
+
