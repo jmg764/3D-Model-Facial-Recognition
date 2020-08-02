@@ -217,13 +217,48 @@ Next, we loop over all encodings in the test image and attempt to match each fac
 
 # loop over the facial embeddings
 for encoding in encodings:
-	# attempt to match each face in the input image to our known
-	# encodings
+	# attempt to match each face in the input image to our known encodings
 	matches = face_recognition.compare_faces(data["encodings"],
 		encoding)
 	name = "Unknown"
 
 ```
 
-```compare_faces``` essentially performs **k-NN** for classification by computing the Euclidean distance between the candidate embedding and all faces in the dataset.
+```compare_faces``` essentially performs **k-NN** for classification by computing the Euclidean distance between the candidate embedding and all faces in the dataset. If matches exist, ```compare_faces``` returns ```True``` for each labeled image associated with a match. Thus, in order to label the test image, we must count the number of "votes" per label, and select the label with the most votes:
+
+```python
+
+# check to see if we have found a match
+if True in matches:
+	# find the indexes of all matched faces then initialize a dictionary to count the total number of times each face was matched
+	matchedIdxs = [i for (i, b) in enumerate(matches) if b]
+	counts = {}
+
+	# loop over the matched indexes and maintain a count for each recognized face face
+	for i in matchedIdxs:
+		name = data["names"][i]
+		counts[name] = counts.get(name, 0) + 1
+
+	# determine the recognized face with the largest number of votes (note: in the event of an unlikely tie Python will select first entry in the dictionary)
+	name = max(counts, key=counts.get)
+# update the list of names
+names.append(name)
+
+```
+
+The following terminal command executes this scipt using the first test image (```test1```) in ```test_data```:
+
+```bash 
+
+$ python recognize_faces_image.py --encodings encodings.pickle --image test_data/test1.png --detection-method hog
+[INFO] loading encodings...
+[INFO] recognizing faces...
+
+```
+
+Which results in:
+
+<img src="test1_result.png"  alt="drawing" width="225"/>
+
+
 
