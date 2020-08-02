@@ -246,7 +246,7 @@ names.append(name)
 
 ```
 
-The following terminal command executes this scipt using the first test image (```test1```) in ```test_data```:
+The following terminal command executes this scipt using the first test image (```test1```) in ```test_data``` and the HOG facial detection method:
 
 ```bash 
 
@@ -256,8 +256,12 @@ $ python recognize_faces_image.py --encodings encodings.pickle --image test_data
 
 ```
 
-Which results in:
+Which results in a correct labeling of Subject 1:
 
-<img src="test1_result.png"  alt="drawing" width="225"/>
+<img src="test1_labeled.png"  alt="drawing" width="225"/>
 
-"s1" corresponds to the first person in the dataset as expected. Subjects 2-5 are correctly labeled as well, but no face is detected for subject 6 possibly due to 
+Subjects 2-5 are correctly labeled as well. Using HOG on Subject 6 results in no facial detection, whereas using CNN results in correct facial detection and recognition as expected:
+
+<img src="test6_labeled.png"  alt="drawing" width="225"/>
+
+
