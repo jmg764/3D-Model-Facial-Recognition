@@ -61,12 +61,9 @@ Synthetic images are saved in a file called ```synthetic_training_data``` which 
 
 ## Deep Metric Learning
 
-Face recognition through deep metric learning involves the use of a neural network to output a real-valued feature vector, or embedding, which is used to quantify a given face. The network used is based on the ResNet-34 architecture described [here](https://arxiv.org/abs/1512.03385), but with a few layers removed and the number of filters per layer reduced by half. It was trained on a dataset of approximately 3 million images, and obtained a 99.38% accuracy on the [Labeled Faces in the Wild](http://vis-www.cs.umass.edu/lfw/) benchmark. 
+Face recognition through deep metric learning involves the use of a neural network to output a real-valued feature vector, or embedding, which is used to quantify a given face. The network used in this project is based on the ResNet-34 architecture described [here](https://arxiv.org/abs/1512.03385), but with a few layers removed and the number of filters per layer reduced by half. It was already trained on a dataset of approximately 3 million images, and obtained a 99.38% accuracy on the [Labeled Faces in the Wild](http://vis-www.cs.umass.edu/lfw/) benchmark. This means that, given two images, it correctly predicts if the images are of the same person 99.38% of the time. In this project, the network is further trained on the Florence 3D Faces dataset.
 
-Training involves a "triplet training step" in which the network creates embeddings for three unique face images –– two of which are the same person. The network is tweaked slightly so that the measurements it generates for the two images of the same person are closer via distance metric than those for the image of the other person:
-
-<img src="triplet_training_example.png"  alt="drawing" width="550"/>
-
+**Creation of the embeddings used for training involves facial detection, affine transformation, and encoding faces, as detailed below: **
 
 ### 1. Facial Detection with HOG
 
@@ -74,9 +71,18 @@ Before we can go about recognizing faces, we must first locate them in our image
 
 <img src="hog_example.png"  alt="drawing" width="550"/>
 
-### 2. Posing and Projecting Faces
+### 2. Affine Transformation
 
 Now that faces are isolated in our images, each image needs to be warped so that facial features are in the same location for each image. This makes it easier for our neural network to compare faces later on. Once facial features are identified through [facial landmark estimation](http://www.csc.kth.se/~vahidk/papers/KazemiCVPR14.pdf), an affine transformation is used to accomplish this warping:
 
 <img src="face_transformation_example.png"  alt="drawing" width="750"/>
 
+### 3. Encoding Faces
+
+The simplest approach to facial recognition would be to compare an unknown face with every image that is already labeled. If there is a large number of images, however, this can take an unnecessarily long time. A faster way would be to use a few basic measurements from each face as a basis for comparison. Given an unknown face, the goal would be to find the labeled face with the closest measurements.
+
+But which measurements should we consider? It turns out that the measurements that seem obvious to us, such as eye color, nose length, and ear size, aren't necessarily valuable measurements to a computer looking at individual pixels of an image. The most accurate approach is to use deep learning to identify the parts of a face that are important to measure. This is the idea behind "training" a neural network for facial recognition. Here, we will be generating 128 measurements for each face in the form of a vector (in other words, a *128-d embedding*).
+
+Training involves a "triplet training step" in which the network creates embeddings for three unique face images –– two of which are the same person. The network is tweaked slightly so that the measurements it generates for the two images of the same person are closer via distance metric than those for the image of the other person:
+
+<img src="triplet_training_example.png"  alt="drawing" width="550"/>
