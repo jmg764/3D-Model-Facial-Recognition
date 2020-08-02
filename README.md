@@ -89,7 +89,7 @@ Training involves a "triplet training step" in which the network creates embeddi
 
 Once the network has been trained, it can generate measurements for faces it hasn't seen before. Here is an example of measurements generated from a test image:
 
-<img src="test_image_embedding.png"  alt="drawing" width="550"/>
+<img src="test_image_embedding.png"  alt="drawing" width="600"/>
 
 (Example images are from [this article](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)).
 
@@ -264,4 +264,6 @@ Subjects 2-5 are correctly labeled as well. Using HOG on Subject 6 results in no
 
 <img src="test6_labeled.png"  alt="drawing" width="225"/>
 
-HOG is known to be less accurate than CNN, but was used here because it is faster, and therefore more practical to use when working with a CPU as was the case for this project. HOG may have failed detecting the face on Subject 6 because of his facial hair; this may have obfuscated the gradient orientation patterns that typically indicate the presence of a face.
+HOG is known to be less accurate than CNN, but was used here because it is faster, and therefore more practical to use when working with a CPU as was the case for this project. Speed is a particular concern when processing a large number of images. HOG was therefore chosen for use on the 300 training images, and was prioritized for the test images for the sake of consistency. We speculate that HOG may have failed detecting the face on Subject 6 because of his facial hair; this may have obfuscated the gradient orientation patterns that would have indicated the presence of a face. 
+
+Nevertheless, using synthetic images derived from 3D models, using HOG for facial detection seemed to have resulted in an accuracy of 83.33%. However, since using CNN on the test images resulted in an accuracy of 100%, it might be favorable to use that facial detection method in future projects despite the decrease in speed.
