@@ -41,7 +41,7 @@ Additionally, the images used for testing our model are the ```.bmp``` files in 
 
 The code for synthetic image generation can be found in [Synthetic Image Genration.ipynb](https://github.com/jmg764/3D-Model-Facial-Recognition/blob/master/Synthetic%20Image%20Generation.ipynb). It requires installation of the packages ```pywavefront``` and ```pyglet```. 
 
-The number of snapshots taken per 3D model is set to 50 by default, but can be changed by altering the value of ```MAX_SNAPSHOTS``` in Synthetic Image Genration.ipynb.
+The number of snapshots taken per 3D model is set to 50 by default, but can be changed by altering the value of ```MAX_SNAPSHOTS``` in Synthetic Image Generation.ipynb.
 
 Each time a snapshot of a subject is taken, it undergoes a random transformation dictated by the following, thereby creating a variety of angles and positions for our training data:
 
@@ -264,4 +264,4 @@ Subjects 2-5 are correctly labeled as well. Using HOG on Subject 6 results in no
 
 <img src="test6_labeled.png"  alt="drawing" width="225"/>
 
-
+HOG is known to be less accurate than CNN, but was used here because it is faster, and therefore more practical to use when working with a CPU as was the case for this project. HOG may have failed detecting the face on Subject 6 because of his facial hair; this may have obfuscated the gradient orientation patterns that typically indicate the presence of a face.
