@@ -258,7 +258,6 @@ $ python recognize_faces_image.py --encodings encodings.pickle --image test_data
 
 Which results in:
 
-<img src="test1_result.png"  alt="drawing" width="225"/>
+<img src="test1_result.png"  alt="drawing" width="350"/>
 
-
-
+"s1" corresponds to the first person in the dataset as expected. Subjects 2-5 are correctly labeled as well, but no face is detected for subject 6
