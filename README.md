@@ -37,7 +37,7 @@ Additionally, the images used for testing our model are the ```.bmp``` files in 
 <img src="test-data/test1.png"  alt="drawing" width="225"/>
 
 
-## Synthetic Code Generation
+## Synthetic Image Generation
 
 The code for synthetic image generation can be found in [Synthetic Image Genration.ipynb](https://github.com/jmg764/3D-Model-Facial-Recognition/blob/master/Synthetic%20Image%20Generation.ipynb). It requires installation of the packages ```pywavefront``` and ```pyglet```. 
 
